@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Image Classification using TensorFlow</title>
+	<link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='styles/style.css') }}"/>
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{url_for('static', filename='js/form.js')}}"></script>
+</head>
+<body>
+<h1>Image Classification using TensorFlow
+<img src="{{ url_for('static', filename='img/tensorflow.png') }}" height="50" width="300" align="right">
+</h1>
+<br>
+
+
+<form id="upload" method="POST" enctype="multipart/form-data"> <!--action="." method="POST" enctype="multipart/form-data"!-->
+
+<fieldset>
+<legend>File Upload</legend>
+
+<input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="300000" />
+
+<div>
+	<label for="fileselect">File to upload:</label>
+	<input type="file" id="fileselect" name="fileselect" />
+	<div id="filedrag">or drop files here</div>
+</div>
+
+<div id="submitbutton">
+	<button id="submit" type="submit" VALUE="Classify Image">Upload Files</button>
+</div>
+
+</fieldset>
+
+</form>
+
+<div id="messages">
+<p id='result'> Status Messages </p>
+</div>
+<script src="{{ url_for('static', filename='js/filedrag.js') }}"></script>
+</body>
+</html>
