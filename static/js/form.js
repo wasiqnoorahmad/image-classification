@@ -9,15 +9,12 @@ $(document).ready(function(){
 
             url: '/classify',
             type: 'POST',
-            data: form_data,
-            contentType: false,
-            cache: false,
-            processData: false,
-            async: false
+            headers: {"Content-Type": "application/json"},
+            data: form_data
         })
             .done(function(data){
                if (data.mess){
-                   alert("I'm Here");
+                   window.alert("I'm Here")
                }
             });
     });

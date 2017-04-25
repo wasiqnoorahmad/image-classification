@@ -34,6 +34,7 @@ def index():
 def classify():
     file = request.files['file']
     print(file)
+    #return "Hello"
     return jsonify({'mess' : 'Sheikh'})
 
 
