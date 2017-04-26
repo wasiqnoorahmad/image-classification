@@ -77,7 +77,10 @@ def classify():
             files.save(os.path.join(updir, filename))
             file_size = os.path.getsize(os.path.join(updir, filename))
             result = image_classify(os.path.join(updir, filename))
-            return jsonify(name=filename, result=result)
+	    result = result[2:-2]
+	    percentage = result.split(',')[-1]
+	    category = ",".join(result.split(',')[:-1]).title()
+            return jsonify(name=filename, category=category, per=percentage)
 
 
 if __name__ == '__main__':

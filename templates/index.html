@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
     <title>Image Classification using TensorFlow</title>
-<link rel="stylesheet" href="{{url_for('css_static', filename='style.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='styles/style.css')}}">
 </head>
 <body>
 
@@ -26,10 +26,10 @@
     </fieldset>
 </form>
 
-<p>Result Filename:&nbsp;<span id="resultFilename"> here</span></p>
-<p>Status Message:&nbsp;<span id="resultFilesize"></span></p>
 <div id="messages">
-<p> Status Messages </p>
+<p>Result Filename:&nbsp;<span id="resultFilename"></span></p>
+<p>Status Category:&nbsp;<span id="resultCat"></span></p>
+<p>Status Percentage:&nbsp;<span id="resultPer"></span></p>
 </div>
 
 <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
