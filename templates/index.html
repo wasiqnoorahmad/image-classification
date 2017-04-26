@@ -1,37 +1,38 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Image Classification using TensorFlow</title>
-	<link rel="stylesheet" type="text/css" media="all" href="{{ url_for('static', filename='styles/style.css') }}"/>
-    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/form.js') }}"></script>
+<meta charset="utf-8">
+    <title>Image Classification using TensorFlow</title>
+<link rel="stylesheet" href="{{url_for('css_static', filename='style.css')}}">
 </head>
 <body>
+
 <h1>Image Classification using TensorFlow
 <img src="{{ url_for('static', filename='img/tensorflow.png') }}" height="50" width="300" align="right">
 </h1>
 <br>
-<!--form name="upload" id="upload" action="upload" method="POST" enctype="multipart/form-data"!-->
-<form name="upload" id="upload">
-<fieldset>
-<legend>HTML File Upload</legend>
-<div>
-	<label for="fileselect">Files to upload:</label>
-	<input type="file" id="fileselect" name="file" />
-	<div id="filedrag">or drop files here</div>
-</div>
 
-<div id="submitbutton">
-	<button type="submit">Upload Files</button>
-</div>
 
-</fieldset>
-
+<form id="uploadform" enctype="multipart/form-data">
+    <fieldset>
+        <legend>HTML File Upload</legend>
+        <div>
+        <label for="file">Select a file</label>
+        <input name="file" type="file">
+        </div>
+        <div>
+            <button id="submit" type="button">Upload</button>
+        </div>
+    </fieldset>
 </form>
-  <div id="messages">
+
+<p>Result Filename:&nbsp;<span id="resultFilename"> here</span></p>
+<p>Status Message:&nbsp;<span id="resultFilesize"></span></p>
+<div id="messages">
 <p> Status Messages </p>
 </div>
-<script src="{{ url_for('static', filename='js/filedrag.js') }}"></script>
+
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="{{url_for('js_static', filename='app.js')}}"></script>
 </body>
 </html>

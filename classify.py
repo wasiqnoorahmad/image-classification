@@ -50,10 +50,10 @@ class NodeLookup(object):
                uid_lookup_path=None):
     if not label_lookup_path:
       label_lookup_path = os.path.join(
-          model_dir, 'imagenet_2012_challenge_label_map_proto.pbtxt')
+          'imagenet', 'imagenet_2012_challenge_label_map_proto.pbtxt')
     if not uid_lookup_path:
       uid_lookup_path = os.path.join(
-          model_dir, 'imagenet_synset_to_human_label_map.txt')
+          'imagenet', 'imagenet_synset_to_human_label_map.txt')
     self.node_lookup = self.load(label_lookup_path, uid_lookup_path)
 
   def load(self, label_lookup_path, uid_lookup_path):

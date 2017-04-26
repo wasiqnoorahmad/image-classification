@@ -5,9 +5,13 @@ $(document).ready(function(){
         event.preventDefault();
 
         var form_data = new FormData($('#upload')[0]);
-        $.ajax({
 
+        $.ajax({
             url: '/classify',
+            processData: false,
+            dataType: 'json',
+            async: false,
+            contentType:false,
             type: 'POST',
             headers: {"Content-Type": "application/json"},
             data: form_data

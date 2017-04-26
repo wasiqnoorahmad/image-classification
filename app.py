@@ -1,73 +1,84 @@
+from flask import (
+    Flask,
+    request,
+    render_template,
+    send_from_directory,
+    url_for,
+    jsonify
+)
+from werkzeug import secure_filename
+from classify import image_classify
 import os
-# We'll render HTML templates and access data sent by POST
-# using the request object from flask. Redirect and url_for
-# will be used to redirect the user once the upload is done
-# and send_from_directory will help us to send/show on the
-# browser the file that the user just uploaded
-from flask import Flask, render_template, send_from_directory, jsonify, request
 
-# Initialize the Flask application
-from numpy.core.tests.test_numerictypes import read_values_nested
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-# This is the path to the upload directory
-app.config['UPLOAD_FOLDER'] = 'uploads/'
-# These are the extension that we are accepting to be uploaded
-app.config['ALLOWED_EXTENSIONS'] = set(['jpg', 'jpeg', 'png'])
+from logging import Formatter, FileHandler
+handler = FileHandler(os.path.join(basedir, 'log.txt'), encoding='utf8')
+handler.setFormatter(
+    Formatter("[%(asctime)s] %(levelname)-8s %(message)s", "%Y-%m-%d %H:%M:%S")
+)
+app.logger.addHandler(handler)
 
-# For a given file, return whether it's an allowed type or not
+
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-# This route will show a form to perform an AJAX request
-# jQuery is loaded to execute the request and update the
-# value of the operation
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'js_static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     'static/js', filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    elif endpoint == 'css_static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     'static/css', filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
+
+@app.route('/css/<path:filename>')
+def css_static(filename):
+    return send_from_directory(app.root_path + '/static/css/', filename)
+
+
+@app.route('/js/<path:filename>')
+def js_static(filename):
+    return send_from_directory(app.root_path + '/static/js/', filename)
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# Route that will process the file upload
 @app.route('/classify', methods=['POST'])
 def classify():
-    file = request.files['file']
-    print(file)
-    #return "Hello"
-    return jsonify({'mess' : 'Sheikh'})
+    if request.method == 'POST':
+        files = request.files['file']
+        if files and allowed_file(files.filename):
+            filename = secure_filename(files.filename)
+            app.logger.info('FileName: ' + filename)
+            updir = os.path.join(basedir, 'upload/')
+            files.save(os.path.join(updir, filename))
+            file_size = os.path.getsize(os.path.join(updir, filename))
+            result = image_classify(os.path.join(updir, filename))
+            return jsonify(name=filename, result=result)
 
-
-    # # Get the name of the uploaded file
-    # file = request.files['file']
-    # print(file)
-    # # Check if the file is one of the allowed types/extensions
-    # if file and allowed_file(file.filename):
-    #     # Make the filename safe, remove unsupported chars
-    #     filename = secure_filename(file.filename)
-    #     # Move the file form the temporal folder to
-    #     # the upload folder we setup
-    #     basedir = os.path.abspath(os.path.dirname(__file__))
-    #     file.save(os.path.join(basedir, app.config['UPLOAD_FOLDER'], filename))
-    #     return jsonify({'mess' : 'Wasiq'})
-        #return 	classify('uploads/' + filename)
-
-        # Redirect the user to the uploaded_file route, which
-        # will basicaly show on the browser the uploaded file
-#        return "Hello"#redirect(url_for('uploaded_file',filename=filename))
-
-# This route is expecting a parameter containing the name
-# of a file. Then it will locate that file on the upload
-# directory and show it on the browser, so if the user uploads
-# an image, that image is going to be show after the upload
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
 
 if __name__ == '__main__':
-    app.run(
-        host="127.0.0.1",
-        port=int("88"),
-        debug=True
-    )
+    app.run(debug=True)
