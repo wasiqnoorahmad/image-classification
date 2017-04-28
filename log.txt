@@ -7,3 +7,6 @@
 [2017-04-26 13:53:16] INFO     FileName: index.jpeg
 [2017-04-26 13:53:28] INFO     FileName: mon.jpg
 [2017-04-26 13:53:53] INFO     FileName: gun.jpg
+[2017-04-29 01:42:19] INFO     FileName: HEC_Letter_1.jpg
+[2017-04-29 01:43:51] INFO     FileName: HEC_Letter_1.jpg
+[2017-04-29 01:53:29] INFO     FileName: HEC_Letter_1.jpg

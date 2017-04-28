@@ -88,8 +88,7 @@ def classify():
     result = result[2:-2]
     percentage = result.split(',')[-1]
     category = ",".join(result.split(',')[:-1]).title()
-    return str(category)
-    #jsonify(name=filename, category=category, per=percentage)
+    return jsonify(name=filename, category=category, per=percentage)
 
 
 if __name__ == '__main__':
