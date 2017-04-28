@@ -8,7 +8,7 @@ from flask import (
 )
 from werkzeug import secure_filename
 from classify import image_classify
-import os
+import os, urllib, requests
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -66,21 +66,30 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/classify', methods=['POST'])
+@app.route('/classify', methods=['POST', 'GET'])
 def classify():
+    updir = os.path.join(basedir, 'upload/')
+    filename = None
     if request.method == 'POST':
         files = request.files['file']
         if files and allowed_file(files.filename):
             filename = secure_filename(files.filename)
             app.logger.info('FileName: ' + filename)
-            updir = os.path.join(basedir, 'upload/')
             files.save(os.path.join(updir, filename))
-            file_size = os.path.getsize(os.path.join(updir, filename))
-            result = image_classify(os.path.join(updir, filename))
-	    result = result[2:-2]
-	    percentage = result.split(',')[-1]
-	    category = ",".join(result.split(',')[:-1]).title()
-            return jsonify(name=filename, category=category, per=percentage)
+    elif request.method == 'GET':
+        url = request.args.get('upload')
+        filename = str(url).split('/')[-1]
+        data = requests.get(url, allow_redirects=True)
+        f = open(filename,'wb')
+        f.write(data.content)
+        f.close()
+
+    result = image_classify(os.path.join(updir, filename))
+    result = result[2:-2]
+    percentage = result.split(',')[-1]
+    category = ",".join(result.split(',')[:-1]).title()
+    return str(category)
+    #jsonify(name=filename, category=category, per=percentage)
 
 
 if __name__ == '__main__':
