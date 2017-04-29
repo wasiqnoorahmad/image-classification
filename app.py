@@ -25,12 +25,12 @@ app.logger.addHandler(handler)
 
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
 
-def convert_jgp(filename):
+def convert_jpg(filename):
     im = Image.open(filename)
     rgb_im = im.convert('RGB')
-    out = os.basename(filename) + '.jpp'
-    rgb_im.save(out)
-    return out
+    out, ext = os.path.splitext(filename)
+    rgb_im.save(out +'.jpg')
+    return out + '.jpg'
 
 
 def get_type(filename):
@@ -88,7 +88,9 @@ def classify():
             filename = secure_filename(files.filename)
             app.logger.info('FileName: ' + filename)
             files.save(os.path.join(updir, filename))
-	    #return jsonify(name=filename, category=category, per=percentage)
+            if get_type(os.path.join(updir, filename) == 'png'):
+                filename = convert_jpg(filename)
+            #return jsonify(name=filename, category=category, per=percentage)
     elif request.method == 'GET':
         url = request.args.get('upload')
         filename = str(url).split('/')[-1]
@@ -96,8 +98,8 @@ def classify():
         f = open(os.path.join(updir, filename),'wb')
         f.write(data.content)
         f.close()
-    if get_type(os.path.join(updir, filename) == 'png'):
-	filename = convert_jpg(filename)
+        if get_type(os.path.join(updir, filename)) == 'png':
+            filename = convert_jpg(os.path.join(updir, filename))
     result = image_classify(os.path.join(updir, filename))
     result = result[2:-2]
     percentage = result.split(',')[-1]
