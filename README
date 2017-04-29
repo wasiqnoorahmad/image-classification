@@ -7,10 +7,19 @@ README file for an image_classification project
 
 1- Install a Linux environemt
 
-2- Install Tensorflow and Bazel using https://www.tensorflow.org/install/install_linux
-and https://bazel.build/versions/master/docs/install-ubuntu.html
+2- Run the following commads:
+    i-      sudo apt-get update
+    ii-     sudo apt-get install python-pip git python-dev
+    iii-    sudo pip install --upgrade pip
+    iv-     sudo pip install tensorflow
+    v-      sudo pip install flask
+    vi-     sudo pip install requests
+    vii-    sudo pip install pillow 
+            or 
+            sudo pip  install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.1.0-cp34-cp34m-linux_x86_64.wh
+    
 
-3- Clone this repository using git clone https://wasiqnoorahmad@gitlab.com/wasiqnoorahmad/image_classification.git
+3- Clone this repository with tadashi branch using git clone -b tadashi https://wasiqnoorahmad@gitlab.com/wasiqnoorahmad/image_classification.git
 
 4- Run app.py i.e. sudo python app.py
 
@@ -18,4 +27,13 @@ and https://bazel.build/versions/master/docs/install-ubuntu.html
 
 6- Browse to some folder to select an image and predict it.
 
-10- Wait for completion.
+7- Wait for completion.
+
+8- To retrain a new dataset, create a dataset of images of multiples classes inside a folder such that each subfolder's name represents a class.
+    For example: http://download.tensorflow.org/example_images/flower_photos.tgz
+
+9- Run python retrain.py --image_dir = <--path to your new data directoy--> 
+
+10- Wait for completion. 
+
+11- Jump to point 4 to predict for new trained data.
