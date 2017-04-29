@@ -88,8 +88,8 @@ def classify():
             filename = secure_filename(files.filename)
             app.logger.info('FileName: ' + filename)
             files.save(os.path.join(updir, filename))
-            if get_type(os.path.join(updir, filename) == 'png'):
-                filename = convert_jpg(filename)
+#            if get_type(os.path.join(updir, filename)) == 'png':
+#                filename = convert_jpg(filename)
             #return jsonify(name=filename, category=category, per=percentage)
     elif request.method == 'GET':
         url = request.args.get('upload')
@@ -98,8 +98,9 @@ def classify():
         f = open(os.path.join(updir, filename),'wb')
         f.write(data.content)
         f.close()
-        if get_type(os.path.join(updir, filename)) == 'png':
-            filename = convert_jpg(os.path.join(updir, filename))
+
+    if get_type(os.path.join(updir, filename)) == 'png':
+	filename = convert_jpg(os.path.join(updir, filename))
     result = image_classify(os.path.join(updir, filename))
     result = result[2:-2]
     percentage = result.split(',')[-1]
