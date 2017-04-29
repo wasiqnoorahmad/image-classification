@@ -6,9 +6,10 @@ from flask import (
     url_for,
     jsonify
 )
+from PIL import Image
 from werkzeug import secure_filename
 from classify import image_classify
-import os, urllib, requests
+import os, urllib, requests, imghdr
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,6 +24,17 @@ app.logger.addHandler(handler)
 
 
 app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
+
+def convert_jgp(filename):
+    im = Image.open(filename)
+    rgb_im = im.convert('RGB')
+    out = os.basename(filename) + '.jpp'
+    rgb_im.save(out)
+    return out
+
+
+def get_type(filename):
+    return imghdr.what(filename)
 
 
 def allowed_file(filename):
@@ -76,18 +88,21 @@ def classify():
             filename = secure_filename(files.filename)
             app.logger.info('FileName: ' + filename)
             files.save(os.path.join(updir, filename))
+	    #return jsonify(name=filename, category=category, per=percentage)
     elif request.method == 'GET':
         url = request.args.get('upload')
         filename = str(url).split('/')[-1]
         data = requests.get(url, allow_redirects=True)
-        f = open(filename,'wb')
+        f = open(os.path.join(updir, filename),'wb')
         f.write(data.content)
         f.close()
-
+    if get_type(os.path.join(updir, filename) == 'png'):
+	filename = convert_jpg(filename)
     result = image_classify(os.path.join(updir, filename))
     result = result[2:-2]
     percentage = result.split(',')[-1]
     category = ",".join(result.split(',')[:-1]).title()
+    #return str('Category: ' + category + '\n' + 'Percentage: ' + percentage)
     return jsonify(name=filename, category=category, per=percentage)
 
 
